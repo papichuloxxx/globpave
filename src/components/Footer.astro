@@ -1,0 +1,138 @@
+---
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import { business, services } from '../data/site';
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="container footer__grid">
+    <div class="footer__brand">
+      <Logo inverted />
+      <p>
+        Pavers &amp; paving specialists and full-service construction company based in Harare, Zimbabwe. {business.slogan}.
+      </p>
+      <a class="btn btn--whatsapp" href={`https://wa.me/${business.whatsapp}`} rel="noopener" target="_blank">
+        <Icon name="whatsapp" /> Chat on WhatsApp
+      </a>
+    </div>
+
+    <nav aria-label="Services">
+      <h2 class="footer__title">Services</h2>
+      <ul class="footer__list">
+        {services.map((s) => <li><a href={`/services/${s.slug}/`}>{s.title}</a></li>)}
+      </ul>
+    </nav>
+
+    <nav aria-label="Company">
+      <h2 class="footer__title">Company</h2>
+      <ul class="footer__list">
+        <li><a href="/about/">About us</a></li>
+        <li><a href="/services/">All services</a></li>
+        <li><a href="/contact/">Contact</a></li>
+        <li><a href="/contact/#quote">Request a quote</a></li>
+      </ul>
+    </nav>
+
+    <address class="footer__contact">
+      <h2 class="footer__title">Contact</h2>
+      <ul class="footer__list">
+        {
+          business.phones.map((p) => (
+            <li>
+              <a href={`tel:${p.tel}`}>
+                <Icon name="phone" size={16} /> {p.display}
+              </a>
+            </li>
+          ))
+        }
+        <li>
+          <a href={`mailto:${business.email}`}><Icon name="mail" size={16} /> {business.email}</a>
+        </li>
+        <li>
+          <span><Icon name="pin" size={16} /> {business.address.street}, {business.address.locality}, {business.address.countryName}</span>
+        </li>
+      </ul>
+    </address>
+  </div>
+  <div class="container footer__bottom">
+    <p>&copy; {year} {business.name}. All rights reserved.</p>
+    <p>Paving &amp; construction in Harare and across Zimbabwe.</p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background: var(--ink);
+    color: #b7c0cf;
+    padding-top: clamp(56px, 8vw, 88px);
+    font-size: 0.95rem;
+  }
+  .footer__grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 0.8fr 1.3fr;
+    gap: 40px;
+  }
+  .footer__brand p {
+    margin: 20px 0 24px;
+    max-width: 34ch;
+  }
+  .footer__title {
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #fff;
+    margin-bottom: 18px;
+  }
+  .footer__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 12px;
+  }
+  .footer__list a,
+  .footer__list span {
+    display: inline-flex;
+    align-items: flex-start;
+    gap: 10px;
+    color: #b7c0cf;
+    text-decoration: none;
+    overflow-wrap: anywhere;
+  }
+  .footer__list a:hover {
+    color: #fff;
+  }
+  .footer__list :global(svg) {
+    margin-top: 4px;
+    color: #6b9bff;
+  }
+  .footer__contact {
+    font-style: normal;
+  }
+  .footer__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 8px 24px;
+    margin-top: 56px;
+    padding-block: 24px;
+    border-top: 1px solid rgb(255 255 255 / 0.1);
+    font-size: 0.85rem;
+  }
+  .footer__bottom p {
+    margin: 0;
+  }
+  @media (max-width: 960px) {
+    .footer__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (max-width: 560px) {
+    .footer__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

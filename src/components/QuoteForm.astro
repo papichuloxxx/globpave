@@ -1,0 +1,153 @@
+---
+import Icon from './Icon.astro';
+import { business, services } from '../data/site';
+
+interface Props {
+  preselect?: string;
+}
+const { preselect } = Astro.props;
+---
+
+<form
+  class="quote"
+  id="quote"
+  action={`mailto:${business.email}`}
+  method="post"
+  enctype="text/plain"
+  data-quote-form
+>
+  <div class="quote__row">
+    <label class="field">
+      <span>Full name</span>
+      <input name="name" type="text" autocomplete="name" required />
+    </label>
+    <label class="field">
+      <span>Phone / WhatsApp</span>
+      <input name="phone" type="tel" autocomplete="tel" inputmode="tel" required placeholder="+263 7…" />
+    </label>
+  </div>
+  <div class="quote__row">
+    <label class="field">
+      <span>Service needed</span>
+      <select name="service" required>
+        <option value="">Choose a service…</option>
+        {
+          services.map((s) => (
+            <optgroup label={s.title}>
+              {s.items.map((i) => (
+                <option selected={preselect === i.name}>{i.name}</option>
+              ))}
+            </optgroup>
+          ))
+        }
+        <option>Other / not sure</option>
+      </select>
+    </label>
+    <label class="field">
+      <span>Location (suburb / town)</span>
+      <input name="location" type="text" autocomplete="address-level2" placeholder="e.g. Borrowdale, Harare" />
+    </label>
+  </div>
+  <label class="field">
+    <span>Project details</span>
+    <textarea name="message" rows="4" placeholder="Size of area, timeline, anything we should know…"></textarea>
+  </label>
+  <div class="quote__actions">
+    <button type="submit" class="btn btn--whatsapp" name="via" value="whatsapp">
+      <Icon name="whatsapp" /> Send via WhatsApp
+    </button>
+    <button type="submit" class="btn btn--outline" name="via" value="email">
+      <Icon name="mail" /> Send via Email
+    </button>
+  </div>
+  <p class="quote__note">We usually reply within one working day. Site visits and quotes are free.</p>
+</form>
+
+<script is:inline define:vars={{ wa: business.whatsapp, email: business.email }}>
+  document.querySelectorAll('[data-quote-form]').forEach((form) => {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const d = new FormData(form);
+      const via = e.submitter && e.submitter.value;
+      const lines = [
+        'Quote request - Globpave Construction website',
+        'Name: ' + d.get('name'),
+        'Phone: ' + d.get('phone'),
+        'Service: ' + d.get('service'),
+        d.get('location') ? 'Location: ' + d.get('location') : '',
+        d.get('message') ? 'Details: ' + d.get('message') : '',
+      ].filter(Boolean);
+      const text = lines.join('\n');
+      if (via === 'email') {
+        const subject = 'Quote request: ' + d.get('service');
+        window.location.href =
+          'mailto:' + email + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(text);
+      } else {
+        window.open('https://wa.me/' + wa + '?text=' + encodeURIComponent(text), '_blank', 'noopener');
+      }
+    });
+  });
+</script>
+
+<style>
+  .quote {
+    display: grid;
+    gap: 18px;
+  }
+  .quote__row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+  .field {
+    display: grid;
+    gap: 8px;
+  }
+  .field span {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .field input,
+  .field select,
+  .field textarea {
+    width: 100%;
+    min-height: 52px;
+    padding: 12px 16px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: #fff;
+    font: inherit;
+    font-size: 1rem;
+    color: var(--ink);
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .field textarea {
+    resize: vertical;
+  }
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus {
+    outline: none;
+    border-color: var(--blue-500);
+    box-shadow: 0 0 0 4px rgb(37 99 235 / 0.15);
+  }
+  .quote__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .quote__note {
+    margin: 0;
+    font-size: 0.88rem;
+    color: var(--muted);
+  }
+  @media (max-width: 640px) {
+    .quote__row {
+      grid-template-columns: 1fr;
+    }
+    .quote__actions .btn {
+      flex: 1 1 100%;
+    }
+  }
+</style>

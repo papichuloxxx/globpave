@@ -1,0 +1,111 @@
+---
+import Icon from './Icon.astro';
+import { services } from '../data/site';
+
+interface Props {
+  exclude?: string;
+}
+const { exclude } = Astro.props;
+const list = services.filter((s) => s.slug !== exclude);
+---
+
+<ul class="services-grid">
+  {
+    list.map((s) => (
+      <li class="svc">
+        <a href={`/services/${s.slug}/`} class="svc__link">
+          <span class="svc__icon">
+            <Icon name={s.icon} size={26} />
+          </span>
+          <h3 class="svc__title">{s.title}</h3>
+          <p class="svc__text">{s.short}</p>
+          <ul class="svc__items">
+            {s.items.slice(0, 4).map((i) => (
+              <li>{i.name}</li>
+            ))}
+          </ul>
+          <span class="svc__more">
+            Learn more <Icon name="arrow" size={18} />
+          </span>
+        </a>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .services-grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr));
+    gap: 20px;
+  }
+  .svc__link {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 30px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    color: inherit;
+    text-decoration: none;
+    transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+  }
+  .svc__link:hover {
+    border-color: var(--blue-100);
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-3px);
+  }
+  .svc__icon {
+    display: grid;
+    place-items: center;
+    width: 54px;
+    height: 54px;
+    border-radius: 14px;
+    background: var(--blue-50);
+    color: var(--blue-600);
+    margin-bottom: 22px;
+    transition: background-color 0.25s, color 0.25s;
+  }
+  .svc__link:hover .svc__icon {
+    background: var(--blue-600);
+    color: #fff;
+  }
+  .svc__text {
+    color: var(--slate);
+    font-size: 0.98rem;
+  }
+  .svc__items {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 24px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .svc__items li {
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 5px 11px;
+    border-radius: 999px;
+    background: var(--bg-soft);
+    color: var(--ink-2);
+  }
+  .svc__more {
+    margin-top: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    color: var(--blue-600);
+  }
+  .svc__more :global(svg) {
+    transition: transform 0.2s;
+  }
+  .svc__link:hover .svc__more :global(svg) {
+    transform: translateX(4px);
+  }
+</style>

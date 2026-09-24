@@ -1,0 +1,189 @@
+---
+import type { GetStaticPaths } from 'astro';
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import ServicesGrid from '../../components/ServicesGrid.astro';
+import QuoteForm from '../../components/QuoteForm.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import Icon from '../../components/Icon.astro';
+import { business, services, type ServiceCategory } from '../../data/site';
+
+export const getStaticPaths = (() => services.map((service) => ({ params: { slug: service.slug }, props: { service } }))) satisfies GetStaticPaths;
+
+interface Props {
+  service: ServiceCategory;
+}
+const { service } = Astro.props;
+const pageUrl = `${business.url}/services/${service.slug}/`;
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: service.title,
+    serviceType: service.title,
+    description: service.metaDescription,
+    url: pageUrl,
+    provider: { '@id': `${business.url}/#business` },
+    areaServed: { '@type': 'Country', name: 'Zimbabwe' },
+    hasOfferCatalog: {
+      '@type': 'OfferCatalog',
+      name: service.title,
+      itemListElement: service.items.map((i) => ({
+        '@type': 'Offer',
+        itemOffered: { '@type': 'Service', name: i.name, description: i.text },
+      })),
+    },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: business.url },
+      { '@type': 'ListItem', position: 2, name: 'Services', item: `${business.url}/services/` },
+      { '@type': 'ListItem', position: 3, name: service.title, item: pageUrl },
+    ],
+  },
+];
+---
+
+<Base title={service.metaTitle} description={service.metaDescription} keywords={service.keywords} schema={schema}>
+  <PageHero
+    eyebrow="Services"
+    title={service.title}
+    lead={service.intro}
+    crumbs={[
+      { href: '/services/', label: 'Services' },
+      { href: `/services/${service.slug}/`, label: service.title },
+    ]}
+  >
+    <div class="hero-actions">
+      <a class="btn btn--primary" href="#quote">Get a Free Quote <Icon name="arrow" /></a>
+      <a class="btn btn--ghost" href={`tel:${business.phones[0].tel}`}><Icon name="phone" /> {business.phones[0].display}</a>
+    </div>
+  </PageHero>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">What we do</p>
+        <h2>{service.title} services in Harare &amp; Zimbabwe</h2>
+      </div>
+      <ul class="items">
+        {
+          service.items.map((i) => (
+            <li class="item">
+              <span class="item__icon">
+                <Icon name={service.icon} size={22} />
+              </span>
+              <div>
+                <h3>{i.name}</h3>
+                <p>{i.text}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="section section--soft">
+    <div class="container split">
+      <div>
+        <p class="eyebrow">Free quote</p>
+        <h2>Get a quote for {service.title.toLowerCase()}</h2>
+        <p class="lead">Send us a few details and we will arrange a free site visit. We serve Harare and projects across Zimbabwe.</p>
+        <ul class="check-list promise">
+          <li>Free site inspection and measurements</li>
+          <li>Itemised quote for materials and labour</li>
+          <li>Experienced, supervised teams</li>
+          <li>Clean site at handover</li>
+        </ul>
+      </div>
+      <div class="card">
+        <QuoteForm preselect={service.items[0].name} />
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">More services</p>
+        <h2>Explore our other services</h2>
+      </div>
+      <ServicesGrid exclude={service.slug} />
+    </div>
+  </section>
+
+  <CtaBand />
+</Base>
+
+<style>
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 32px;
+  }
+  .items {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
+    gap: 20px;
+  }
+  .item {
+    display: flex;
+    gap: 18px;
+    padding: 26px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+  }
+  .item__icon {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    background: var(--blue-50);
+    color: var(--blue-600);
+  }
+  .item h3 {
+    margin-bottom: 6px;
+  }
+  .item p {
+    margin: 0;
+    color: var(--slate);
+    font-size: 0.97rem;
+  }
+  .split {
+    display: grid;
+    grid-template-columns: 0.85fr 1.15fr;
+    gap: clamp(32px, 6vw, 72px);
+    align-items: start;
+  }
+  .promise {
+    margin-top: 28px;
+    font-weight: 600;
+  }
+  .card {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: clamp(24px, 4vw, 40px);
+    box-shadow: var(--shadow);
+  }
+  @media (max-width: 880px) {
+    .split {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 560px) {
+    .hero-actions .btn {
+      flex: 1 1 100%;
+    }
+  }
+</style>

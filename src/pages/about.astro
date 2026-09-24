@@ -1,0 +1,198 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Icon from '../components/Icon.astro';
+import driveway from '../assets/driveway-paving.jpg';
+import { business } from '../data/site';
+
+const values = [
+  { icon: 'ruler', title: 'Precision', text: 'Accurate setting out, level surfaces and straight lines. Details are what make work last.' },
+  { icon: 'handshake', title: 'Honesty', text: 'Clear quotes, realistic timelines and regular updates. No hidden costs.' },
+  { icon: 'shield', title: 'Durability', text: 'Proper foundations, compaction and quality materials, built for Zimbabwe’s rainy seasons.' },
+  { icon: 'clock', title: 'Reliability', text: 'We turn up when we say we will and finish what we start.' },
+];
+
+const breadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: business.url },
+    { '@type': 'ListItem', position: 2, name: 'About', item: `${business.url}/about/` },
+  ],
+};
+---
+
+<Base
+  title="About Globpave Construction | Paving Specialists & Builders in Harare"
+  description="Globpave Construction is a Harare-based paving specialist and construction company delivering driveways, buildings, civil works and more across Zimbabwe."
+  keywords={['about Globpave Construction', 'construction company Glen Lorne', 'Harare builders']}
+  schema={[breadcrumb]}
+>
+  <PageHero
+    eyebrow="About us"
+    title="From foundations to a brighter tomorrow"
+    lead="Globpave Construction is a Harare-based construction company that began as pavers and paving specialists and grew into a complete construction partner for homes, businesses and developers."
+    crumbs={[{ href: '/about/', label: 'About' }]}
+  />
+
+  <section class="section">
+    <div class="container story">
+      <div class="story__media">
+        <Image
+          src={driveway}
+          alt="Completed paver driveway and landscaping at a modern Harare home"
+          widths={[386]}
+          sizes="(max-width: 880px) 90vw, 440px"
+          format="webp"
+          quality={80}
+        />
+      </div>
+      <div>
+        <p class="eyebrow">Our story</p>
+        <h2>Paving specialists who build everything around the pavers</h2>
+        <p class="lead">
+          Our roots are in paving: driveways, parking bays, walkways and yards across Harare. Clients kept asking us to
+          take on the wall, the roof, the borehole and the extension too, so we built the teams to do it.
+        </p>
+        <p>
+          Today Globpave handles civil and infrastructure works, new house construction, extensions and renovations,
+          plumbing and borehole installations, roofing and interiors, and fencing, electrical and maintenance. Whether it
+          is a single driveway or a complete build, you get one accountable contractor and the same standard of work.
+        </p>
+        <p>
+          We are based at {business.address.street}, Harare, and work across Harare's suburbs and throughout Zimbabwe.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--soft">
+    <div class="container">
+      <div class="section-head section-head--center">
+        <p class="eyebrow">What we stand for</p>
+        <h2>Our values</h2>
+      </div>
+      <ul class="values">
+        {
+          values.map((v) => (
+            <li>
+              <span class="values__icon">
+                <Icon name={v.icon} size={24} />
+              </span>
+              <h3>{v.title}</h3>
+              <p>{v.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container areas">
+      <div>
+        <p class="eyebrow">Where we work</p>
+        <h2>Serving Harare and all of Zimbabwe</h2>
+        <p class="lead">
+          Based in Glen Lorne, we regularly work in Harare's northern and eastern suburbs, surrounding towns, and on
+          projects further afield.
+        </p>
+      </div>
+      <ul class="areas__list">
+        {business.areaServed.filter((a) => a !== 'Zimbabwe').map((a) => <li><Icon name="pin" size={16} /> {a}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <CtaBand />
+</Base>
+
+<style>
+  .story {
+    display: grid;
+    grid-template-columns: 0.8fr 1.2fr;
+    gap: clamp(32px, 6vw, 80px);
+    align-items: center;
+  }
+  .story__media :global(img) {
+    width: 100%;
+    max-width: 440px;
+    aspect-ratio: 386 / 395;
+    object-fit: cover;
+    border-radius: 24px;
+    box-shadow: var(--shadow-lg);
+  }
+  .values {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+  .values li {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 28px;
+  }
+  .values p {
+    margin: 0;
+    color: var(--slate);
+    font-size: 0.97rem;
+  }
+  .values__icon {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: var(--blue-600);
+    color: #fff;
+    margin-bottom: 18px;
+  }
+  .areas {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(32px, 6vw, 72px);
+    align-items: center;
+  }
+  .areas__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .areas__list li {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    font-weight: 600;
+  }
+  .areas__list :global(svg) {
+    color: var(--blue-600);
+  }
+  @media (max-width: 1000px) {
+    .values {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (max-width: 880px) {
+    .story,
+    .areas {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 560px) {
+    .values {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

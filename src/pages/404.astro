@@ -1,0 +1,23 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Icon from '../components/Icon.astro';
+---
+
+<Base title="Page not found | Globpave Construction" description="The page you are looking for could not be found." noindex>
+  <PageHero eyebrow="404" title="This page is still under construction" lead="The page you are looking for doesn’t exist or has moved.">
+    <div class="actions">
+      <a class="btn btn--primary" href="/">Back to home <Icon name="arrow" /></a>
+      <a class="btn btn--ghost" href="/services/">View services</a>
+    </div>
+  </PageHero>
+</Base>
+
+<style>
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 32px;
+  }
+</style>

@@ -1,0 +1,92 @@
+---
+interface Props {
+  eyebrow: string;
+  title: string;
+  lead?: string;
+  crumbs?: { href: string; label: string }[];
+}
+const { eyebrow, title, lead, crumbs = [] } = Astro.props;
+---
+
+<section class="page-hero">
+  <div class="container">
+    {
+      crumbs.length > 0 && (
+        <nav aria-label="Breadcrumb" class="crumbs">
+          <ol>
+            <li><a href="/">Home</a></li>
+            {crumbs.map((c, i) =>
+              i === crumbs.length - 1 ? (
+                <li aria-current="page">{c.label}</li>
+              ) : (
+                <li><a href={c.href}>{c.label}</a></li>
+              ),
+            )}
+          </ol>
+        </nav>
+      )
+    }
+    <p class="eyebrow">{eyebrow}</p>
+    <h1>{title}</h1>
+    {lead && <p class="page-hero__lead">{lead}</p>}
+    <slot />
+  </div>
+</section>
+
+<style>
+  .page-hero {
+    position: relative;
+    overflow: hidden;
+    background: var(--ink);
+    color: #c9d2e0;
+    padding-block: clamp(48px, 8vw, 100px);
+    isolation: isolate;
+  }
+  .page-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(700px 400px at 90% 0%, rgb(37 99 235 / 0.35), transparent 70%),
+      linear-gradient(90deg, var(--ink) 35%, transparent),
+      url('/pavers.svg') center / 300px repeat;
+  }
+  .eyebrow {
+    color: #8fb1ff;
+  }
+  h1 {
+    color: #fff;
+    font-size: clamp(2.2rem, 5vw, 3.8rem);
+    max-width: 18ch;
+  }
+  .page-hero__lead {
+    font-size: clamp(1.05rem, 1.6vw, 1.2rem);
+    max-width: 62ch;
+    margin: 0;
+  }
+  .crumbs ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    list-style: none;
+    padding: 0;
+    margin: 0 0 28px;
+    font-size: 0.88rem;
+  }
+  .crumbs li + li::before {
+    content: '/';
+    margin-right: 6px;
+    opacity: 0.5;
+  }
+  .crumbs a {
+    color: #c9d2e0;
+    text-decoration: none;
+  }
+  .crumbs a:hover {
+    color: #fff;
+  }
+  .crumbs [aria-current] {
+    color: #fff;
+  }
+</style>

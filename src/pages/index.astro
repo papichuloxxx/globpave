@@ -1,0 +1,499 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import ServicesGrid from '../components/ServicesGrid.astro';
+import CtaBand from '../components/CtaBand.astro';
+import QuoteForm from '../components/QuoteForm.astro';
+import Faq from '../components/Faq.astro';
+import driveway from '../assets/driveway-paving.jpg';
+import { business, services } from '../data/site';
+
+const faqs = [
+  {
+    q: 'Do you offer free quotes and site visits in Harare?',
+    a: 'Yes. We visit your property in Harare and surrounding areas, measure up and give you a free, itemised quote so you know exactly what you are paying for.',
+  },
+  {
+    q: 'What types of pavers do you install?',
+    a: 'We install interlocking pavers, cobbles, brick pavers and heavy-duty pavers for driveways, parking bays, walkways, pool surrounds and commercial yards, in a range of colours and patterns.',
+  },
+  {
+    q: 'How long does it take to pave a driveway?',
+    a: 'Most residential driveways take between 3 and 10 working days depending on size, site preparation and drainage. We confirm the timeline in your quote before work starts.',
+  },
+  {
+    q: 'Do you work outside Harare?',
+    a: 'Yes. While we are based in Glen Lorne, Harare, we take on paving, construction and civil projects across Zimbabwe, including Chitungwiza, Ruwa, Norton, Bulawayo and Mutare.',
+  },
+  {
+    q: 'Can one contractor handle my whole build?',
+    a: 'Yes. Globpave covers foundations, brickwork, roofing, plumbing, electrical, ceilings, tiling, painting, paving, fencing and boreholes, so you deal with a single team from start to finish.',
+  },
+];
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+
+const reasons = [
+  { icon: 'paver', title: 'Paving specialists', text: 'Paving is our core trade. Proper base preparation, compaction and falls mean surfaces that stay level and drain.' },
+  { icon: 'handshake', title: 'One team, start to finish', text: 'Civils, building, roofing, plumbing, electrical and finishes under one contractor. Fewer delays, one point of contact.' },
+  { icon: 'ruler', title: 'Clear, itemised quotes', text: 'Free site visits and quotes that list materials and labour so there are no surprises later.' },
+  { icon: 'shield', title: 'Quality you can see', text: 'Quality materials, experienced tradespeople and site supervision on every project, big or small.' },
+];
+
+const steps = [
+  { title: 'Get in touch', text: 'Call, WhatsApp or send the quote form with a few details about your project.' },
+  { title: 'Free site visit', text: 'We inspect the site, take measurements and talk through options and materials.' },
+  { title: 'Detailed quote', text: 'You receive an itemised quote and timeline to review before anything starts.' },
+  { title: 'Build & hand over', text: 'Our team completes the work, cleans up and walks you through the finished job.' },
+];
+---
+
+<Base
+  title="Globpave Construction | Paving Contractors & Builders in Harare, Zimbabwe"
+  description="Pavers & paving specialists in Harare. Driveways, parking bays, building, road construction, plumbing, boreholes, roofing, fencing and more. Free quotes: +263 772 900 562."
+  keywords={['paving company Harare', 'best paving contractors Zimbabwe', 'interlocking pavers Harare']}
+  schema={[faqSchema]}
+>
+  <section class="hero">
+    <div class="container hero__inner">
+      <div class="hero__copy">
+        <p class="eyebrow eyebrow--light">Paving specialists · Harare</p>
+        <h1>
+          Complete <span class="hl">construction</span> solutions
+        </h1>
+        <p class="hero__lead">
+          From driveways and parking bays to new homes, roads and boreholes, Globpave Construction builds it properly,
+          from the foundations up, across Harare and Zimbabwe.
+        </p>
+        <div class="hero__actions">
+          <a class="btn btn--primary" href="/contact/#quote">Get a Free Quote <Icon name="arrow" /></a>
+          <a class="btn btn--ghost" href={`tel:${business.phones[0].tel}`}><Icon name="phone" /> {business.phones[0].display}</a>
+        </div>
+        <ul class="hero__trust">
+          <li><Icon name="check" size={18} /> Free site visits</li>
+          <li><Icon name="check" size={18} /> Itemised quotes</li>
+          <li><Icon name="check" size={18} /> Harare &amp; nationwide</li>
+        </ul>
+      </div>
+      <div class="hero__media">
+        <Image
+          src={driveway}
+          alt="Grey interlocking paver driveway at a modern home in Harare, laid by Globpave Construction"
+          widths={[386]}
+          sizes="(max-width: 880px) 90vw, 440px"
+          loading="eager"
+          fetchpriority="high"
+          format="webp"
+          quality={82}
+        />
+        <div class="hero__badge">
+          <Icon name="paver" size={28} />
+          <div>
+            <strong>Driveways &amp; Paving</strong>
+            <span>Our speciality</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="strip" aria-label="What we do">
+    <div class="container strip__inner">
+      {services.map((s) => <a href={`/services/${s.slug}/`}><Icon name={s.icon} size={20} /> {s.title}</a>)}
+    </div>
+  </section>
+
+  <section class="section" id="services" aria-labelledby="services-title">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Our services</p>
+        <h2 id="services-title">Everything your project needs, from one trusted contractor</h2>
+        <p class="lead">
+          Six service divisions covering civil works, building, paving, plumbing, roofing, fencing and electrical, so your
+          project runs smoothly from groundbreaking to handover.
+        </p>
+      </div>
+      <ServicesGrid />
+    </div>
+  </section>
+
+  <section class="section section--soft" aria-labelledby="why-title">
+    <div class="container why">
+      <div class="why__intro">
+        <p class="eyebrow">Why Globpave</p>
+        <h2 id="why-title">Built right the first time</h2>
+        <p class="lead">
+          We started as paving specialists and grew into a full construction company. The same attention to detail that
+          goes into a level, well-drained driveway goes into every wall, roof and road we build.
+        </p>
+        <a class="btn btn--outline" href="/about/">About Globpave <Icon name="arrow" /></a>
+      </div>
+      <ul class="why__grid">
+        {
+          reasons.map((r) => (
+            <li class="why__card">
+              <span class="why__icon">
+                <Icon name={r.icon} size={24} />
+              </span>
+              <h3>{r.title}</h3>
+              <p>{r.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="process-title">
+    <div class="container">
+      <div class="section-head section-head--center">
+        <p class="eyebrow">How it works</p>
+        <h2 id="process-title">A simple, transparent process</h2>
+      </div>
+      <ol class="steps">
+        {
+          steps.map((s, i) => (
+            <li class="step">
+              <span class="step__num">{String(i + 1).padStart(2, '0')}</span>
+              <h3>{s.title}</h3>
+              <p>{s.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="section section--soft" aria-labelledby="quote-title">
+    <div class="container split">
+      <div>
+        <p class="eyebrow">Request a quote</p>
+        <h2 id="quote-title">Tell us about your project</h2>
+        <p class="lead">Fill in the form and send it straight to our team on WhatsApp or email. Prefer to talk? Call us.</p>
+        <ul class="contact-list">
+          {
+            business.phones.map((p) => (
+              <li>
+                <a href={`tel:${p.tel}`}>
+                  <Icon name="phone" size={20} /> {p.display}
+                </a>
+              </li>
+            ))
+          }
+          <li><a href={`mailto:${business.email}`}><Icon name="mail" size={20} /> {business.email}</a></li>
+          <li><span><Icon name="pin" size={20} /> {business.address.street}, Harare</span></li>
+        </ul>
+      </div>
+      <div class="card">
+        <QuoteForm />
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="faq-title">
+    <div class="container faq-wrap">
+      <div class="section-head">
+        <p class="eyebrow">FAQ</p>
+        <h2 id="faq-title">Common questions</h2>
+        <p class="lead">Can't see your question? Call or WhatsApp us on {business.phones[0].display}.</p>
+      </div>
+      <Faq items={faqs} />
+    </div>
+  </section>
+
+  <CtaBand />
+</Base>
+
+<style>
+  .hero {
+    position: relative;
+    overflow: hidden;
+    background: var(--ink);
+    color: #c9d2e0;
+    isolation: isolate;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(900px 500px at 85% 10%, rgb(37 99 235 / 0.35), transparent 70%),
+      linear-gradient(90deg, var(--ink) 30%, transparent),
+      url('/pavers.svg') center / 300px repeat;
+  }
+  .hero__inner {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    align-items: center;
+    gap: clamp(32px, 6vw, 80px);
+    padding-block: clamp(56px, 9vw, 120px);
+  }
+  .eyebrow--light {
+    color: #8fb1ff;
+  }
+  .hero h1 {
+    color: #fff;
+    margin-bottom: 24px;
+  }
+  .hl {
+    color: #5b8cff;
+  }
+  .hero__lead {
+    font-size: clamp(1.05rem, 1.6vw, 1.22rem);
+    max-width: 54ch;
+    margin-bottom: 32px;
+  }
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .hero__trust {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 24px;
+    list-style: none;
+    padding: 0;
+    margin: 32px 0 0;
+    font-size: 0.92rem;
+    font-weight: 600;
+  }
+  .hero__trust li {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .hero__trust :global(svg) {
+    color: #5b8cff;
+  }
+  .hero__media {
+    position: relative;
+    justify-self: end;
+    width: 100%;
+    max-width: 440px;
+  }
+  .hero__media :global(img) {
+    width: 100%;
+    aspect-ratio: 386 / 395;
+    object-fit: cover;
+    border-radius: 24px;
+    box-shadow: 0 40px 80px rgb(0 0 0 / 0.45);
+    outline: 1px solid rgb(255 255 255 / 0.1);
+    outline-offset: 8px;
+  }
+  .hero__badge {
+    position: absolute;
+    left: -24px;
+    bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 20px;
+    border-radius: 16px;
+    background: #fff;
+    color: var(--blue-600);
+    box-shadow: var(--shadow-lg);
+  }
+  .hero__badge strong {
+    display: block;
+    color: var(--ink);
+    font-size: 0.98rem;
+  }
+  .hero__badge span {
+    font-size: 0.82rem;
+    color: var(--muted);
+  }
+
+  .strip {
+    background: var(--blue-600);
+  }
+  .strip__inner {
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    justify-content: space-between;
+    gap: 12px 24px;
+    padding-block: 18px;
+  }
+  .strip a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.92rem;
+    text-decoration: none;
+    opacity: 0.92;
+  }
+  .strip a:hover {
+    opacity: 1;
+    text-decoration: underline;
+  }
+
+  .why {
+    display: grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    gap: clamp(40px, 6vw, 80px);
+    align-items: start;
+  }
+  .why__intro {
+    position: sticky;
+    top: 110px;
+  }
+  .why__intro .lead {
+    margin-bottom: 28px;
+  }
+  .why__grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .why__card {
+    padding: 28px;
+    border-radius: var(--radius);
+    background: #fff;
+    border: 1px solid var(--line);
+  }
+  .why__card p {
+    margin: 0;
+    color: var(--slate);
+    font-size: 0.97rem;
+  }
+  .why__icon {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    margin-bottom: 18px;
+    background: var(--ink);
+    color: #fff;
+  }
+
+  .steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    counter-reset: step;
+  }
+  .step {
+    position: relative;
+    padding: 28px 24px;
+    border-top: 3px solid var(--blue-600);
+    background: var(--bg-soft);
+    border-radius: 0 0 var(--radius) var(--radius);
+  }
+  .step__num {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 2.6rem;
+    font-weight: 800;
+    line-height: 1;
+    color: var(--blue-100);
+    -webkit-text-stroke: 1.5px var(--blue-600);
+    margin-bottom: 18px;
+  }
+  .step p {
+    margin: 0;
+    color: var(--slate);
+    font-size: 0.97rem;
+  }
+
+  .split {
+    display: grid;
+    grid-template-columns: 0.85fr 1.15fr;
+    gap: clamp(32px, 6vw, 72px);
+    align-items: start;
+  }
+  .card {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: clamp(24px, 4vw, 40px);
+    box-shadow: var(--shadow);
+  }
+  .contact-list {
+    list-style: none;
+    padding: 0;
+    margin: 28px 0 0;
+    display: grid;
+    gap: 14px;
+  }
+  .contact-list a,
+  .contact-list span {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--ink);
+    font-weight: 700;
+    text-decoration: none;
+    overflow-wrap: anywhere;
+  }
+  .contact-list :global(svg) {
+    flex: none;
+    color: var(--blue-600);
+  }
+
+  .faq-wrap {
+    display: grid;
+    grid-template-columns: 0.8fr 1.2fr;
+    gap: clamp(32px, 6vw, 72px);
+    align-items: start;
+  }
+
+  @media (max-width: 1000px) {
+    .steps {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (max-width: 880px) {
+    .hero__inner,
+    .why,
+    .split,
+    .faq-wrap {
+      grid-template-columns: 1fr;
+    }
+    .hero::before {
+      background:
+        radial-gradient(600px 400px at 90% 0%, rgb(37 99 235 / 0.35), transparent 70%),
+        url('/pavers.svg') center / 260px repeat;
+    }
+    .hero__media {
+      justify-self: center;
+    }
+    .hero__badge {
+      left: 12px;
+    }
+    .why__intro {
+      position: static;
+    }
+    .strip__inner {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (max-width: 560px) {
+    .why__grid,
+    .steps,
+    .strip__inner {
+      grid-template-columns: 1fr;
+    }
+    .hero__actions .btn {
+      flex: 1 1 100%;
+    }
+  }
+</style>

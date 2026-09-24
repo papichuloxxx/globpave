@@ -1,0 +1,122 @@
+---
+import '../styles/global.css';
+import manropeUrl from '@fontsource-variable/manrope/files/manrope-latin-wght-normal.woff2?url';
+import archivoUrl from '@fontsource-variable/archivo/files/archivo-latin-wdth-normal.woff2?url';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { business, services, siteKeywords } from '../data/site';
+
+interface Props {
+  title: string;
+  description: string;
+  keywords?: string[];
+  ogImage?: string;
+  schema?: Record<string, unknown>[];
+  noindex?: boolean;
+}
+
+const { title, description, keywords = [], ogImage = '/og-image.jpg', schema = [], noindex = false } = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const ogImageUrl = new URL(ogImage, Astro.site).href;
+const allKeywords = [...new Set([...keywords, ...siteKeywords])].join(', ');
+
+const localBusiness = {
+  '@context': 'https://schema.org',
+  '@type': 'GeneralContractor',
+  '@id': `${business.url}/#business`,
+  name: business.name,
+  slogan: business.slogan,
+  description:
+    'Paving specialists and construction company in Harare, Zimbabwe offering paving, driveways, building, civil works, plumbing, boreholes, roofing, fencing and electrical services.',
+  url: business.url,
+  logo: `${business.url}/logo.png`,
+  image: ogImageUrl,
+  email: business.email,
+  telephone: business.phones.map((p) => p.tel),
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: business.address.street,
+    addressLocality: business.address.locality,
+    addressRegion: business.address.region,
+    addressCountry: business.address.country,
+  },
+  areaServed: business.areaServed.map((name) => ({ '@type': 'Place', name })),
+  priceRange: '$$',
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: 'Construction services',
+    itemListElement: services.map((s) => ({
+      '@type': 'OfferCatalog',
+      name: s.title,
+      url: `${business.url}/services/${s.slug}/`,
+      itemListElement: s.items.map((i) => ({
+        '@type': 'Offer',
+        itemOffered: { '@type': 'Service', name: i.name, description: i.text },
+      })),
+    })),
+  },
+};
+
+const website = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  '@id': `${business.url}/#website`,
+  name: business.name,
+  url: business.url,
+  publisher: { '@id': `${business.url}/#business` },
+  inLanguage: 'en-ZW',
+};
+
+const jsonLd = [localBusiness, website, ...schema];
+---
+
+<!doctype html>
+<html lang="en-ZW">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="keywords" content={allKeywords} />
+    <link rel="canonical" href={canonical} />
+    <meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large'} />
+    <meta name="theme-color" content="#0b1220" />
+    <meta name="format-detection" content="telephone=yes" />
+    <meta name="geo.region" content="ZW-HA" />
+    <meta name="geo.placename" content="Harare" />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <link rel="preload" href={archivoUrl} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={manropeUrl} as="font" type="font/woff2" crossorigin />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={business.name} />
+    <meta property="og:locale" content="en_ZW" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Paved driveway by Globpave Construction, Harare" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <Header />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>
