@@ -1,0 +1,151 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import GalleryGrid from '../components/GalleryGrid.astro';
+import VideoGrid from '../components/VideoGrid.astro';
+import Lightbox from '../components/Lightbox.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Icon from '../components/Icon.astro';
+import { business } from '../data/site';
+import { categories, gallery, videoStages, videos } from '../data/gallery';
+
+const sections = categories.map((c) => ({ ...c, items: gallery.filter((g) => g.category === c.id) }));
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: business.url },
+      { '@type': 'ListItem', position: 2, name: 'Projects', item: `${business.url}/projects/` },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'ImageGallery',
+    name: 'Globpave Construction projects',
+    url: `${business.url}/projects/`,
+    author: { '@id': `${business.url}/#business` },
+    image: gallery.map((g) => ({
+      '@type': 'ImageObject',
+      contentUrl: new URL(g.image.src, business.url).href,
+      caption: g.alt,
+    })),
+  },
+];
+---
+
+<Base
+  title="Our Projects | Paving, Driveways & Civil Works in Harare | Globpave"
+  description="Photos and videos of Globpave Construction projects: paved driveways, walkways, courtyards, warehouse yards and earthworks across Harare and Zimbabwe."
+  keywords={['paving projects Harare', 'driveway paving photos', 'paver patterns Zimbabwe', 'warehouse yard paving']}
+  schema={schema}
+>
+  <PageHero
+    eyebrow="Our work"
+    title="Projects"
+    lead="Driveways, walkways, courtyards and heavy-duty yards laid by our own teams, plus the earthworks behind them."
+    crumbs={[{ href: '/projects/', label: 'Projects' }]}
+  />
+
+  <nav class="jump" aria-label="Project categories">
+    <div class="container jump__inner">
+      {sections.map((s) => <a href={`#${s.id}`}>{s.label} <span>{s.items.length}</span></a>)}
+      <a href="#videos">Site videos <span>{videos.length}</span></a>
+    </div>
+  </nav>
+
+  {
+    sections.map((s, i) => (
+      <section class:list={['section', 'section--tight', { 'section--soft': i % 2 === 1 }]} id={s.id} aria-labelledby={`${s.id}-title`}>
+        <div class="container">
+          <div class="section-head">
+            <h2 id={`${s.id}-title`}>{s.label}</h2>
+            <p class="lead">{s.text}</p>
+          </div>
+          <GalleryGrid items={s.items} group={s.id} />
+        </div>
+      </section>
+    ))
+  }
+
+  <section class="section section--tight section--soft" id="videos" aria-labelledby="videos-title">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">From the site</p>
+        <h2 id="videos-title">Warehouse yard: from rubble to paving</h2>
+        <p class="lead">
+          Clips from one of our industrial jobs, showing the work that goes in before a single paver is laid.
+        </p>
+      </div>
+      {
+        videoStages.map((stage) => (
+          <div class="stage">
+            <h3>{stage.label}</h3>
+            <p class="stage__text">{stage.text}</p>
+            <VideoGrid items={videos.filter((v) => v.stage === stage.id)} />
+          </div>
+        ))
+      }
+      <a class="btn btn--primary" href="/contact/#quote">Get a quote for your project <Icon name="arrow" /></a>
+    </div>
+  </section>
+
+  <CtaBand />
+  <Lightbox />
+</Base>
+
+<style>
+  .section--tight {
+    padding-block: clamp(48px, 6vw, 80px);
+    /* clears the sticky category bar when jumping to a section */
+    scroll-margin-top: 64px;
+  }
+  .jump {
+    position: sticky;
+    top: 92px;
+    z-index: 10;
+    background: #fff;
+    border-bottom: 1px solid var(--line);
+  }
+  .jump__inner {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-block: 12px;
+    scrollbar-width: none;
+  }
+  .jump a {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .jump a:hover {
+    border-color: var(--blue-600);
+    color: var(--blue-600);
+  }
+  .jump span {
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+  .stage {
+    margin-bottom: 48px;
+  }
+  .stage__text {
+    color: var(--slate);
+    margin-bottom: 20px;
+  }
+  @media (max-width: 880px) {
+    .jump {
+      top: 76px;
+    }
+  }
+</style>

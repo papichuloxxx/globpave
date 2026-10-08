@@ -6,7 +6,10 @@ import ServicesGrid from '../../components/ServicesGrid.astro';
 import QuoteForm from '../../components/QuoteForm.astro';
 import CtaBand from '../../components/CtaBand.astro';
 import Icon from '../../components/Icon.astro';
+import GalleryGrid from '../../components/GalleryGrid.astro';
+import Lightbox from '../../components/Lightbox.astro';
 import { business, services, type ServiceCategory } from '../../data/site';
+import { galleryForService } from '../../data/gallery';
 
 export const getStaticPaths = (() => services.map((service) => ({ params: { slug: service.slug }, props: { service } }))) satisfies GetStaticPaths;
 
@@ -15,6 +18,9 @@ interface Props {
 }
 const { service } = Astro.props;
 const pageUrl = `${business.url}/services/${service.slug}/`;
+// A lone photo reads as an afterthought, so only show the section once there are a few
+const found = galleryForService(service.slug);
+const work = found.length >= 3 ? found : [];
 
 const schema = [
   {
@@ -87,7 +93,26 @@ const schema = [
     </div>
   </section>
 
-  <section class="section section--soft">
+  {
+    work.length > 0 && (
+      <section class="section section--soft" aria-labelledby="work-title">
+        <div class="container">
+          <div class="section-head section-head--row">
+            <div>
+              <p class="eyebrow">Recent work</p>
+              <h2 id="work-title">{service.title} projects</h2>
+            </div>
+            <a class="btn btn--outline" href="/projects/">
+              See all projects <Icon name="arrow" />
+            </a>
+          </div>
+          <GalleryGrid items={work.slice(0, 8)} group="service-work" />
+        </div>
+      </section>
+    )
+  }
+
+  <section class:list={['section', { 'section--soft': work.length === 0 }]}>
     <div class="container split">
       <div>
         <p class="eyebrow">Free quote</p>
@@ -106,7 +131,7 @@ const schema = [
     </div>
   </section>
 
-  <section class="section">
+  <section class:list={['section', { 'section--soft': work.length > 0 }]}>
     <div class="container">
       <div class="section-head">
         <p class="eyebrow">More services</p>
@@ -117,6 +142,7 @@ const schema = [
   </section>
 
   <CtaBand />
+  {work.length > 0 && <Lightbox />}
 </Base>
 
 <style>

@@ -1,0 +1,142 @@
+---
+import Icon from './Icon.astro';
+---
+
+<dialog class="lightbox" data-lightbox-dialog aria-label="Photo viewer">
+  <figure class="lightbox__figure">
+    <img class="lightbox__img" alt="" data-lightbox-img />
+    <figcaption class="lightbox__caption" data-lightbox-caption></figcaption>
+  </figure>
+  <button type="button" class="lightbox__btn lightbox__close" data-lightbox-close aria-label="Close">
+    <Icon name="close" />
+  </button>
+  <button type="button" class="lightbox__btn lightbox__prev" data-lightbox-prev aria-label="Previous photo">
+    <Icon name="arrow" />
+  </button>
+  <button type="button" class="lightbox__btn lightbox__next" data-lightbox-next aria-label="Next photo">
+    <Icon name="arrow" />
+  </button>
+</dialog>
+
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>('[data-lightbox-dialog]');
+  const imgEl = dialog?.querySelector<HTMLImageElement>('[data-lightbox-img]');
+  const captionEl = dialog?.querySelector<HTMLElement>('[data-lightbox-caption]');
+  let items: HTMLElement[] = [];
+  let index = 0;
+
+  function show(i: number) {
+    if (!imgEl || !captionEl) return;
+    index = (i + items.length) % items.length;
+    const el = items[index];
+    imgEl.src = el.dataset.full ?? '';
+    imgEl.alt = el.dataset.alt ?? '';
+    captionEl.textContent = `${el.dataset.caption ?? ''} · ${index + 1} of ${items.length}`;
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-lightbox]').forEach((el) => {
+    el.addEventListener('click', () => {
+      items = [...document.querySelectorAll<HTMLElement>(`[data-lightbox="${el.dataset.lightbox}"]`)];
+      show(items.indexOf(el));
+      dialog?.showModal();
+    });
+  });
+
+  dialog?.querySelector('[data-lightbox-close]')?.addEventListener('click', () => dialog.close());
+  dialog?.querySelector('[data-lightbox-prev]')?.addEventListener('click', () => show(index - 1));
+  dialog?.querySelector('[data-lightbox-next]')?.addEventListener('click', () => show(index + 1));
+  dialog?.addEventListener('click', (e) => {
+    if (e.target === dialog) dialog.close();
+  });
+  dialog?.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') show(index - 1);
+    if (e.key === 'ArrowRight') show(index + 1);
+  });
+</script>
+
+<style>
+  .lightbox {
+    width: 100vw;
+    height: 100dvh;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: rgb(6 10 18 / 0.94);
+    color: #fff;
+  }
+  .lightbox[open] {
+    display: grid;
+    place-items: center;
+  }
+  .lightbox::backdrop {
+    background: transparent;
+  }
+  .lightbox__figure {
+    margin: 0;
+    display: grid;
+    justify-items: center;
+    gap: 14px;
+    padding: 64px 72px 24px;
+    max-width: 100%;
+  }
+  .lightbox__img {
+    max-width: min(1400px, 100%);
+    max-height: calc(100dvh - 140px);
+    width: auto;
+    height: auto;
+    border-radius: var(--radius-sm);
+  }
+  .lightbox__caption {
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-align: center;
+    color: #c9d2e0;
+  }
+  .lightbox__btn {
+    position: absolute;
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border: 0;
+    border-radius: 50%;
+    background: rgb(255 255 255 / 0.12);
+    color: #fff;
+    cursor: pointer;
+  }
+  .lightbox__btn:hover,
+  .lightbox__btn:focus-visible {
+    background: rgb(255 255 255 / 0.24);
+  }
+  .lightbox__close {
+    top: 14px;
+    right: 14px;
+  }
+  .lightbox__prev,
+  .lightbox__next {
+    top: 50%;
+    translate: 0 -50%;
+  }
+  .lightbox__prev {
+    left: 14px;
+  }
+  .lightbox__prev :global(svg) {
+    rotate: 180deg;
+  }
+  .lightbox__next {
+    right: 14px;
+  }
+  @media (max-width: 560px) {
+    .lightbox__figure {
+      padding: 64px 12px 84px;
+    }
+    .lightbox__prev,
+    .lightbox__next {
+      top: auto;
+      bottom: 18px;
+      translate: none;
+    }
+  }
+</style>

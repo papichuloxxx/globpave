@@ -8,6 +8,7 @@ const links = [
   { href: '/', label: 'Home' },
   { href: '/services/', label: 'Services' },
   { href: '/services/paving-external-works/', label: 'Paving' },
+  { href: '/projects/', label: 'Projects' },
   { href: '/about/', label: 'About' },
   { href: '/contact/', label: 'Contact' },
 ];
@@ -84,7 +85,7 @@ const phone = business.phones[0];
     align-items: center;
     justify-content: space-between;
     gap: 24px;
-    height: 76px;
+    height: 92px;
   }
   .header__brand {
     text-decoration: none;
@@ -167,6 +168,9 @@ const phone = business.phones[0];
       background: #fff;
       backdrop-filter: none;
       -webkit-backdrop-filter: none;
+    }
+    .header__inner {
+      height: 76px;
     }
     .menu-btn {
       display: inline-flex;

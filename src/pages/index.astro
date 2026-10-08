@@ -7,7 +7,10 @@ import CtaBand from '../components/CtaBand.astro';
 import QuoteForm from '../components/QuoteForm.astro';
 import Faq from '../components/Faq.astro';
 import driveway from '../assets/driveway-paving.jpg';
+import GalleryGrid from '../components/GalleryGrid.astro';
+import Lightbox from '../components/Lightbox.astro';
 import { business, services } from '../data/site';
+import { featuredGallery } from '../data/gallery';
 
 const faqs = [
   {
@@ -126,7 +129,20 @@ const steps = [
     </div>
   </section>
 
-  <section class="section section--soft" aria-labelledby="why-title">
+  <section class="section section--soft" aria-labelledby="work-title">
+    <div class="container">
+      <div class="section-head section-head--row">
+        <div>
+          <p class="eyebrow">Recent projects</p>
+          <h2 id="work-title">Work we're proud of</h2>
+        </div>
+        <a class="btn btn--outline" href="/projects/">View all projects <Icon name="arrow" /></a>
+      </div>
+      <GalleryGrid items={featuredGallery} group="featured" />
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="why-title">
     <div class="container why">
       <div class="why__intro">
         <p class="eyebrow">Why Globpave</p>
@@ -211,6 +227,7 @@ const steps = [
   </section>
 
   <CtaBand />
+  <Lightbox />
 </Base>
 
 <style>

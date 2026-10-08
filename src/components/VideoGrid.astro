@@ -1,0 +1,49 @@
+---
+import { getImage } from 'astro:assets';
+import type { GalleryVideo } from '../data/gallery';
+
+interface Props {
+  items: GalleryVideo[];
+}
+const { items } = Astro.props;
+
+const posters = await Promise.all(items.map((v) => getImage({ src: v.poster, width: 640, format: 'webp', quality: 70 })));
+---
+
+<ul class="videos">
+  {
+    items.map((v, i) => (
+      <li class="video">
+        <video controls playsinline preload="none" poster={posters[i].src} aria-label={v.title}>
+          <source src={v.src} type="video/mp4" />
+        </video>
+        <p>{v.title}</p>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .videos {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+    gap: 20px;
+  }
+  .video video {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: contain;
+    border-radius: var(--radius-sm);
+    background: var(--ink);
+  }
+  .video p {
+    margin: 10px 0 0;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--ink);
+  }
+</style>

@@ -3,3 +3,11 @@ dist/
 .astro/
 .env
 .DS_Store
+
+# Original / unused media kept locally, not deployed
+media-originals/
+
+# Local-only working files, not part of the site
+static-site/
+.hallmark/
+globpavelogo.jpeg
