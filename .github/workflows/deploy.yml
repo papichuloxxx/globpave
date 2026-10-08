@@ -1,4 +1,4 @@
-name: Deploy to cPanel
+name: Deploy
 
 on:
   push:
@@ -10,7 +10,8 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  deploy:
+  cpanel:
+    name: Deploy to cPanel
     runs-on: ubuntu-latest
     env:
       FTP_SERVER: ${{ secrets.FTP_SERVER }}
@@ -33,3 +34,35 @@ jobs:
           security: loose
           local-dir: ./dist/
           server-dir: ${{ secrets.FTP_SERVER_DIR }}
+
+  pages-build:
+    name: Build GitHub Pages preview
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+        env:
+          BASE_PATH: /${{ github.event.repository.name }}/
+      - run: node scripts/rebase-links.mjs /${{ github.event.repository.name }}
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  pages:
+    name: Deploy GitHub Pages preview
+    needs: pages-build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
